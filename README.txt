@@ -13,7 +13,7 @@ How to get started on windows
 3.You can run the sample app in a couple of different ways. The first is to simply launch the executable:
 Run it using node app.js in the root directory of your application.
 	node app.js
-
+4. Go to http://localhost:8000/
 Features:
 Simple design
 Detailed 7 day forecast
