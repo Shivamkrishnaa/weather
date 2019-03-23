@@ -73,6 +73,7 @@ var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 var yyyy = today.getFullYear();
 
 today = mm + '/' + dd + '/' + yyyy;
+
         function timeConverter(UNIX_timestamp){
   var a = new Date(UNIX_timestamp * 1000);
   var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -84,4 +85,58 @@ today = mm + '/' + dd + '/' + yyyy;
   var sec = a.getSeconds();
   var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
   return time;
-}
+}                         ;
+       var date = new Date();
+              console.log(timeConverter(1552761558)           )
+       console.log(timeConverter(date.setDate(date.getDate()/1000)));
+
+                         var arr=[];
+                         var j =0;
+                         var i;
+                             var re;
+                             var date2 = parseInt(Date.now() / 1000) - 7 * 24 * 60 * 60;
+                                                                                var date3 = parseInt(Date.now() / 1000) - 6 * 24 * 60 * 60;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                         const urls = [`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date2}`,`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date3}`];
+
+// var responses = [];
+// var completed_requests = 0;
+//
+// for (i in urls) {
+//     request(urls[i], function(err,response,res) {
+//         responses.push(JSON.parse(res));
+//         completed_requests++;
+//         if (completed_requests == urls.length) {
+//             // All download done, process responses array
+//             console.log(responses);
+//         }
+//     });
+// }

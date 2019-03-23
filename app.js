@@ -45,86 +45,138 @@ var icons = {
         '50n': '/images/cloud-fog.svg',
     },
 };
+
+
 var msg="city not found"
 app.get('/',(req,res)=>{
     res.render('index');
 })
     app.post('/',(req, res, next)=>{
+        var a = new Array();
         let city = req.body.loc.replace(/\s/g, "");
         let precipitation;
-       geo.getlocation(city).then((code)=>{
-          var slat=code.source.results[0].geometry.location.lat;
-          var slng=code.source.results[0].geometry.location.lng;
-          var address= code.source.results[0].formatted_address;
-           let url2=`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/${slat},${slng}`;
-           console.log(url2);
-           request(url2,(err,darkresult,darkbody)=>{
+        var date2 = parseInt(Date.now() / 1000) - 7 * 24 * 60 * 60;
+        var date3 = parseInt(Date.now() / 1000) - 6 * 24 * 60 * 60;
+        var date4 = parseInt(Date.now() / 1000) - 5 * 24 * 60 * 60;
+        var date5 = parseInt(Date.now() / 1000) - 4 * 24 * 60 * 60;
+        var date6 = parseInt(Date.now() / 1000) - 3 * 24 * 60 * 60;
+        var date7 = parseInt(Date.now() / 1000) - 2 * 24 * 60 * 60;
+        var date8= parseInt(Date.now() / 1000) - 1 * 24 * 60 * 60;
+        var date9 = parseInt(Date.now() / 1000) - 0 * 24 * 60 * 60;
 
 
-              let DB= JSON.parse(darkbody);
-console.log(DB)
-console.log(JSON.stringify(darkbody));
-               precipitation=DB.currently.precipProbability*100;
-               var tem=DB.currently.temperature;
-               var darkSky = {
-                   source: "DarkSky",
-                   icon_id: DB.currently.icon,
-                   icon: icons.darkSky[DB.currently.icon],
-                   address: address,
-                   temperature: Math.round(tem * 10)/10,
-                   summary: DB.currently.summary,
-                  precip: DB.currently.precipProbability,
-                   humidity:DB.currently.humidity,
-                   hourly:DB.hourly,
-                   daily:DB.daily,
-               };
-               let cityy = req.body.loc;
-
-               let url = `http://api.openweathermap.org/data/2.5/weather?q=${cityy}&units=imperial&appid=${apiKey}`;               console.log(url)
-
-               request(url,(err,result,body)=>{
-
-                   let bod=JSON.parse(body);
-                   console.log(err)
-                   console.log(bod.message)
-                   if(parseInt(bod.cod)==404){
-                       res.render('index',{
-                           error:err,
-msg:msg,
-
-                       });
-                   }
-               else {
-                       var openWeather = {
-                           source: "OpenWeather",
-                           icon_id: bod.weather[0].icon,
-                           icon: icons.openWeather[bod.weather[0].icon],
-                           address: address,
-                           temperature: Math.round(bod.main.temp * 10) / 10,
-                           summary: bod.weather[0].main,
-                           humidity: bod.main.humidity,
-                           precipitation: "NULL"
-                       };
 
 
-                       res.render('index', {
-                           pass: darkSky,
-                           dark: darkSky,
+        const urls = [`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date2}`,`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date3}`,`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date4}`,`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date5}`,`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date6}`,`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date7}`,`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date8}`,`https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/28.5355,77.3910,${date9}`];
+var i;
+        var responses = [];
+        var completed_requests = 0;
 
-                           open: openWeather,
+        for (i in urls) {
+            request(urls[i], function(err,response,ress) {
+               var dailyy=JSON.parse(ress)
+                responses.push(dailyy.daily.data[0]);
+                completed_requests++;
+                function dynamicSort(property) {
+                    var sortOrder = 1;
+                    if(property[0] === "-") {
+                        sortOrder = -1;
+                        property = property.substr(1);
+                    }
+                    return function (a,b) {
+                        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+                        return result * sortOrder;
+                    }
+                }
+                responses.sort(dynamicSort("time"));
 
-                       })
-                   }
-               })
-           })
-       }).catch((err)=>{
-           console.log(err)
-           res.render('index',{
-               error:err,
-msg:msg,
+                if (completed_requests == urls.length) {
+                    // All download done, process responses array
+                    console.log(responses);
 
-           });
-       });
+                    geo.getlocation(city).then((code)=> {
+                        var slat = code.source.results[0].geometry.location.lat;
+                        var slng = code.source.results[0].geometry.location.lng;
+                        var address = code.source.results[0].formatted_address;
+                        var date2 = parseInt(Date.now() / 1000) - 7 * 24 * 60 * 60;
+                        let url2 = `https://api.darksky.net/forecast/f4f563e7d41f2f9f60c29b6bb0b7a99d/${slat},${slng}`;
+
+
+
+
+                        request(url2,(err,darkresult,darkbody)=>{
+
+
+                            let DB= JSON.parse(darkbody);
+// console.log(DB)
+
+                            precipitation=DB.currently.precipProbability*100;
+                            var tem=DB.currently.temperature;
+                            var darkSky = {
+                                source: "DarkSky",
+                                icon_id: DB.currently.icon,
+                                icon: icons.darkSky[DB.currently.icon],
+                                address: address,
+                                temperature: Math.round(tem * 10)/10,
+                                summary: DB.currently.summary,
+                                precip: DB.currently.precipProbability,
+                                humidity:DB.currently.humidity,
+                                hourly:DB.hourly,
+                                daily:DB.daily,
+
+
+                            };
+                            let cityy = req.body.loc;
+
+                            let url = `http://api.openweathermap.org/data/2.5/weather?q=${cityy}&units=imperial&appid=${apiKey}`;               console.log(url)
+
+                            request(url,(err,result,body)=>{
+
+                                let bod=JSON.parse(body);
+                                console.log(err)
+                                console.log(bod.message)
+                                if(parseInt(bod.cod)==404){
+                                    res.render('index',{
+                                        error:err,
+                                        msg:msg,
+
+                                    });
+                                }
+                                else {
+                                    var openWeather = {
+                                        source: "OpenWeather",
+                                        icon_id: bod.weather[0].icon,
+                                        icon: icons.openWeather[bod.weather[0].icon],
+                                        address: address,
+                                        temperature: Math.round(bod.main.temp * 10) / 10,
+                                        summary: bod.weather[0].main,
+                                        humidity: bod.main.humidity,
+                                        precipitation: "NULL"
+                                    };
+
+
+                                    res.render('index', {
+                                        pass: darkSky,
+                                        dark: darkSky,
+                                        doob:responses,
+                                        open: openWeather,
+
+                                    })
+                                }
+                            })
+                        })
+                    }).catch((err)=>{
+                        console.log(err)
+                        res.render('index',{
+                            error:err,
+                            msg:msg,
+
+                        });
+                    });
+                }
+            });
+        }
+
 
 
 

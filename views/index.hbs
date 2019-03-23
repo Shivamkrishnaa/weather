@@ -557,6 +557,15 @@
 
 
 <body>
+<div style="display: none;">
+{{#each doob}}
+   <div name="arttime">{{time}}</div>
+ <div name="artprecip">{{precipProbability}}</div>
+<div name="artHT">{{temperatureHigh}}</div>
+  <div name="artLT">{{temperatureMin}}</div>
+    <div name="arthumid">{{humidity}}</div>
+{{/each}}
+</div>
 
 <section>
     <div class="container">
@@ -638,7 +647,7 @@ HOURLY
 {{/each}}
 </div>
 <h2 align="center">
-DAILY
+Weather Forecast(next 7 days)
 </h2>
 
 <div class="container">
@@ -679,7 +688,30 @@ DAILY
 {{/each}}
 </div>
 <br>
-<div class="container">
+<div class="container-fluid">
+    <div class="row">
+<div class="col-md-3">
+            <h2 align="center">
+                Last 7 Days Graph
+            </h2>
+</div>
+        <div class="col-md-6">
+            <canvas align="center" id="art" width="250" height="250"></canvas>
+
+        </div>
+    </div>
+</div>
+            <div class="row">
+                <div class="col-md-4">
+                    <h2 >
+                    </h2>
+                </div>
+                <div class="col-md-8">
+                <h2 >Forecast
+                </h2>
+                </div>
+            </div>
+            <br>
     <div class="row">
         <div class="col-md-4">
             <h2 align="center">
@@ -702,10 +734,75 @@ DAILY
     </div>
 </div>
 {{/if}}
+
 </body>
 
 <script>
-    $(function() {
+    $(function() {var arttime=document.getElementsByName('arttime');
+                var arthigh=document.getElementsByName('artHT');
+                var artlow=document.getElementsByName('artLT');
+                var arthumid=document.getElementsByName('arthumid');
+                var artprecip=document.getElementsByName('artprecip');
+                var arttimearray=[];
+                var arthigharray=[];
+                var artlowarray=[];
+                var arthumidarray=[];
+                var artpreciparray=[];
+                for (index = 0; index < arttime.length; index++) {
+                    arthigharray.push(parseInt(arthigh[index].innerHTML));
+                    artlowarray.push(parseInt(artlow[index].innerHTML));
+                    arthumidarray.push((parseFloat(arthumid[index].innerHTML))*100);
+                    artpreciparray.push((parseFloat(artprecip[index].innerHTML))*100);
+                    arttimearray.push(timeConverter(arttime[index].innerHTML));
+
+                }
+                console.log(arthumidarray +artpreciparray)
+                var cta = $('#art');
+
+                let arttt = new Chart(cta, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Precipitation ',
+                            fill: false,
+                            backgroundColor: 'rgb(75,0,130)',
+                            borderColor: 'rgb(0,191,255)',
+                            data: artpreciparray
+                        },{
+                            label: 'Humidity ',
+                            fill: false,
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 0,0 )',
+                            data: arthumidarray
+                        },
+                            {
+                                label: 'Lowtemp F ',
+                                fill: false,
+                                borderColor: 'rgb(135,206,250)',
+                                backgroundColor: 'rgb(240,248,255)',
+
+                                data: artlowarray
+                            },{
+                                label: 'Hightemp F ',
+                                fill: false,
+                                borderColor: 'rgb(0,0,128)',
+                                backgroundColor: 'rgb(138,43,226)',
+
+                                data: arthigharray
+                            }],
+                        labels: arttimearray
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    suggestedMin: 0,
+                                    suggestedMax: 100
+                                }
+                            }]
+                        }
+                    }
+                });
                 var dailytime=document.getElementsByName('dailytime');
                 var temphigh=document.getElementsByName('temphigh');
                 var templow=document.getElementsByName('templow');
@@ -726,6 +823,7 @@ DAILY
                     dailytimearray.push(timeConverter(dailytime[index].innerHTML));
 
                 }
+
                 console.log("helo"+dailyhumidarray)
                 var ctxxx = $('#PChart');
                 var color = Chart.helpers.color;
