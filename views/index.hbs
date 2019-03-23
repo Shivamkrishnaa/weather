@@ -1,0 +1,868 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script  defer src="https://maps.googleapis.com/maps/api/js?libraries=places&language=en&key=AIzaSyCW8fuiLQb7SGZIVoYeeFTs8TX5nlWrV6U"  type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+<style>
+    @import url("http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900,400italic");
+    @import url("//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.css");
+    body {
+        padding: 60px 0px;
+        background-color: rgb(220, 220, 220);
+    }
+
+    .event-list {
+        list-style: none;
+        font-family: 'Lato', sans-serif;
+        margin: 0px;
+        padding: 0px;
+    }
+    .event-list > li {
+        background-color: rgb(255, 255, 255);
+        box-shadow: 0px 0px 5px rgb(51, 51, 51);
+        box-shadow: 0px 0px 5px rgba(51, 51, 51, 0.7);
+        padding: 0px;
+        margin: 0px 0px 20px;
+    }
+    .event-list > li > time {
+        display: inline-block;
+        width: 100%;
+        color: rgb(255, 255, 255);
+        background-color: rgb(197, 44, 102);
+        padding: 5px;
+        text-align: center;
+        text-transform: uppercase;
+    }
+    .event-list > li:nth-child(even) > time {
+        background-color: rgb(165, 82, 167);
+    }
+    .event-list > li > time > span {
+        display: none;
+    }
+    .event-list > li > time > .day {
+        display: block;
+        font-size: 56pt;
+        font-weight: 100;
+        line-height: 1;
+    }
+    .event-list > li time > .month {
+        display: block;
+        font-size: 24pt;
+        font-weight: 900;
+        line-height: 1;
+    }
+    .event-list > li > img {
+        width: 100%;
+    }
+    .event-list > li > .info {
+        padding-top: 5px;
+        text-align: center;
+    }
+    .event-list > li > .info > .title {
+        font-size: 17pt;
+        font-weight: 700;
+        margin: 0px;
+    }
+    .event-list > li > .info > .desc {
+        font-size: 13pt;
+        font-weight: 300;
+        margin: 0px;
+    }
+    .event-list > li > .info > ul,
+    .event-list > li > .social > ul {
+        display: table;
+        list-style: none;
+        margin: 10px 0px 0px;
+        padding: 0px;
+        width: 100%;
+        text-align: center;
+    }
+    .event-list > li > .social > ul {
+        margin: 0px;
+    }
+    .event-list > li > .info > ul > li,
+    .event-list > li > .social > ul > li {
+        display: table-cell;
+        cursor: pointer;
+        color: rgb(30, 30, 30);
+        font-size: 11pt;
+        font-weight: 300;
+        padding: 3px 0px;
+    }
+    .event-list > li > .info > ul > li > a {
+        display: block;
+        width: 100%;
+        color: rgb(30, 30, 30);
+        text-decoration: none;
+    }
+    .event-list > li > .social > ul > li {
+        padding: 0px;
+    }
+    .event-list > li > .social > ul > li > a {
+        padding: 3px 0px;
+    }
+    .event-list > li > .info > ul > li:hover,
+    .event-list > li > .social > ul > li:hover {
+        color: rgb(30, 30, 30);
+        background-color: rgb(200, 200, 200);
+    }
+    .facebook a,
+    .twitter a,
+    .google-plus a {
+        display: block;
+        width: 100%;
+        color: rgb(75, 110, 168) !important;
+    }
+    .twitter a {
+        color: rgb(79, 213, 248) !important;
+    }
+    .google-plus a {
+        color: rgb(221, 75, 57) !important;
+    }
+    .facebook:hover a {
+        color: rgb(255, 255, 255) !important;
+        background-color: rgb(75, 110, 168) !important;
+    }
+    .twitter:hover a {
+        color: rgb(255, 255, 255) !important;
+        background-color: rgb(79, 213, 248) !important;
+    }
+    .google-plus:hover a {
+        color: rgb(255, 255, 255) !important;
+        background-color: rgb(221, 75, 57) !important;
+    }
+
+    @media (min-width: 768px) {
+        .event-list > li {
+            position: relative;
+            display: block;
+            width: 100%;
+            height: 120px;
+            padding: 0px;
+        }
+        .event-list > li > time,
+        .event-list > li > img  {
+            display: inline-block;
+        }
+        .event-list > li > time,
+        .event-list > li > img {
+            width: 120px;
+            float: left;
+        }
+        .event-list > li > .info {
+            background-color: rgb(245, 245, 245);
+            overflow: hidden;
+        }
+        .event-list > li > time,
+        .event-list > li > img {
+            width: 120px;
+            height: 120px;
+            padding: 0px;
+            margin: 0px;
+        }
+        .event-list > li > .info {
+            position: relative;
+            height: 120px;
+            text-align: left;
+            padding-right: 40px;
+        }
+        .event-list > li > .info > .title,
+        .event-list > li > .info > .desc {
+            padding: 0px 10px;
+        }
+        .event-list > li > .info > ul {
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+        }
+        .event-list > li > .social {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            display: block;
+            width: 40px;
+        }
+        .event-list > li > .social > ul {
+            border-left: 1px solid rgb(230, 230, 230);
+        }
+        .event-list > li > .social > ul > li {
+            display: block;
+            padding: 0px;
+        }
+        .event-list > li > .social > ul > li > a {
+            display: block;
+            width: 40px;
+            padding: 10px 0px 9px;
+        }
+    }
+    @import url("https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css");
+    @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
+    @import url('https://fonts.googleapis.com/css?family=Libre+Baskerville:400,700');
+    body{
+        font-family: 'Open Sans', sans-serif;
+    }
+    *:hover{
+        -webkit-transition: all 1s ease;
+        transition: all 1s ease;
+    }
+    section{
+        float:left;
+        width:100%;
+        background: #fff;  /* fallback for old browsers */
+        padding:30px 0;
+    }
+    h1{float:left; width:100%; color:#232323; margin-bottom:30px; font-size: 14px;}
+    h1 span{font-family: 'Libre Baskerville', serif; display:block; font-size:45px; text-transform:none; margin-bottom:20px; margin-top:30px; font-weight:700}
+    h1 a{color:#131313; font-weight:bold;}
+
+    /*Profile Card 1*/
+    .profile-card-1 {
+        font-family: 'Open Sans', Arial, sans-serif;
+        position: relative;
+        float: left;
+        overflow: hidden;
+        width: 100%;
+        color: #ffffff;
+        text-align: center;
+        height:368px;
+        border:none;
+    }
+    .profile-card-1 .background {
+        width:100%;
+        vertical-align: top;
+        opacity: 0.9;
+        -webkit-filter: blur(5px);
+        filter: blur(5px);
+        -webkit-transform: scale(1.8);
+        transform: scale(2.8);
+    }
+    .profile-card-1 .card-content {
+        width: 100%;
+        padding: 15px 25px;
+        position: absolute;
+        left: 0;
+        top: 50%;
+    }
+    .profile-card-1 .profile {
+        border-radius: 50%;
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        max-width: 100px;
+        opacity: 1;
+        box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 255, 255, 1);
+        -webkit-transform: translate(-50%, 0%);
+        transform: translate(-50%, 0%);
+    }
+    .profile-card-1 h2 {
+        margin: 0 0 5px;
+        font-weight: 600;
+        font-size:25px;
+    }
+    .profile-card-1 h2 small {
+        display: block;
+        font-size: 15px;
+        margin-top:10px;
+    }
+    .profile-card-1 i {
+        display: inline-block;
+        font-size: 16px;
+        color: #ffffff;
+        text-align: center;
+        border: 1px solid #fff;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        margin:0 5px;
+    }
+    .profile-card-1 .icon-block{
+        float:left;
+        width:100%;
+        margin-top:15px;
+    }
+    .profile-card-1 .icon-block a{
+        text-decoration:none;
+    }
+    .profile-card-1 i:hover {
+        background-color:#fff;
+        color:#2E3434;
+        text-decoration:none;
+    }
+
+    /*Profile card 2*/
+    .profile-card-2 .card-img-block{
+        float:left;
+        width:100%;
+        height:150px;
+        overflow:hidden;
+    }
+    .profile-card-2 .card-body{
+        position:relative;
+    }
+    .profile-card-2 .profile {
+        border-radius: 50%;
+        position: absolute;
+        top: -42px;
+        left: 15%;
+        max-width: 75px;
+        border: 3px solid rgba(255, 255, 255, 1);
+        -webkit-transform: translate(-50%, 0%);
+        transform: translate(-50%, 0%);
+    }
+    .profile-card-2 h5{
+        font-weight:600;
+        color:#6ab04c;
+    }
+    .profile-card-2 .card-text{
+        font-weight:300;
+        font-size:15px;
+    }
+    .profile-card-2 .icon-block{
+        float:left;
+        width:100%;
+    }
+    .profile-card-2 .icon-block a{
+        text-decoration:none;
+    }
+    .profile-card-2 i {
+        display: inline-block;
+        font-size: 16px;
+        color: #6ab04c;
+        text-align: center;
+        border: 1px solid #6ab04c;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        margin:0 5px;
+    }
+    .profile-card-2 i:hover {
+        background-color:#6ab04c;
+        color:#fff;
+    }
+
+    /*Profile Card 3*/
+    .profile-card-3 {
+        font-family: 'Open Sans', Arial, sans-serif;
+        position: relative;
+        float: left;
+        overflow: hidden;
+        width: 100%;
+        text-align: center;
+        height:368px;
+        border:none;
+    }
+    .profile-card-3 .background-block {
+        float: left;
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+    }
+    .profile-card-3 .background-block .background {
+        width:100%;
+        vertical-align: top;
+        opacity: 0.9;
+        -webkit-filter: blur(0.5px);
+        filter: blur(0.5px);
+        -webkit-transform: scale(1.8);
+        transform: scale(2.8);
+    }
+    .profile-card-3 .card-content {
+        width: 100%;
+        padding: 15px 25px;
+        color:#232323;
+        float:left;
+        background:#efefef;
+        height:50%;
+        border-radius:0 0 5px 5px;
+        position: relative;
+        z-index: 9999;
+    }
+    .profile-card-3 .card-content::before {
+        content: '';
+        background: #efefef;
+        width: 120%;
+        height: 100%;
+        left: 11px;
+        bottom: 51px;
+        position: absolute;
+        z-index: -1;
+        transform: rotate(-13deg);
+    }
+    .profile-card-3 .profile {
+        border-radius: 50%;
+        position: absolute;
+        bottom: 50%;
+        left: 50%;
+        max-width: 100px;
+        opacity: 1;
+        box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 255, 255, 1);
+        -webkit-transform: translate(-50%, 0%);
+        transform: translate(-50%, 0%);
+        z-index:99999;
+    }
+    .profile-card-3 h2 {
+        margin: 0 0 5px;
+        font-weight: 600;
+        font-size:25px;
+    }
+    .profile-card-3 h2 small {
+        display: block;
+        font-size: 15px;
+        margin-top:10px;
+    }
+    .profile-card-3 i {
+        display: inline-block;
+        font-size: 16px;
+        color: #232323;
+        text-align: center;
+        border: 1px solid #232323;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        margin:0 5px;
+    }
+    .profile-card-3 .icon-block{
+        float:left;
+        width:100%;
+        margin-top:15px;
+    }
+    .profile-card-3 .icon-block a{
+        text-decoration:none;
+    }
+    .profile-card-3 i:hover {
+        background-color:#232323;
+        color:#fff;
+        text-decoration:none;
+    }
+
+
+    /*Profile card 4*/
+    .profile-card-4 .card-img-block{
+        float:left;
+        width:100%;
+        height:150px;
+        overflow:hidden;
+    }
+    .profile-card-4 .card-body{
+        position:relative;
+    }
+    .profile-card-4 .profile {
+        border-radius: 50%;
+        position: absolute;
+        top: -62px;
+        left: 50%;
+        width:100px;
+        border: 3px solid rgba(255, 255, 255, 1);
+        margin-left: -50px;
+    }
+    .profile-card-4 .card-img-block{
+        position:relative;
+    }
+    .profile-card-4 .card-img-block > .info-box{
+        position:absolute;
+        background:rgba(217,11,225,0.6);
+        width:100%;
+        height:100%;
+        color:#fff;
+        padding:20px;
+        text-align:center;
+        font-size:14px;
+        -webkit-transition: 1s ease;
+        transition: 1s ease;
+        opacity:0;
+    }
+    .profile-card-4 .card-img-block:hover > .info-box{
+        opacity:1;
+        -webkit-transition: all 1s ease;
+        transition: all 1s ease;
+    }
+    .profile-card-4 h5{
+        font-weight:600;
+        color:#d90be1;
+    }
+    .profile-card-4 .card-text{
+        font-weight:300;
+        font-size:15px;
+    }
+    .profile-card-4 .icon-block{
+        float:left;
+        width:100%;
+    }
+    .profile-card-4 .icon-block a{
+        text-decoration:none;
+    }
+    .profile-card-4 i {
+        display: inline-block;
+        font-size: 16px;
+        color: #d90be1;
+        text-align: center;
+        border: 1px solid #d90be1;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        margin:0 5px;
+    }
+    .profile-card-4 i:hover {
+        background-color:#d90be1;
+        color:#fff;
+    }
+
+    /*Profile Card 5*/
+    .profile-card-5{
+        margin-top:20px;
+    }
+    .profile-card-5 .btn{
+        border-radius:2px;
+        text-transform:uppercase;
+        font-size:12px;
+        padding:7px 20px;
+    }
+    .profile-card-5 .card-img-block {
+        width: 91%;
+        margin: 0 auto;
+        position: relative;
+        top: -20px;
+
+    }
+    .profile-card-5 .card-img-block img{
+        border-radius:5px;
+        box-shadow:0 0 10px rgba(0,0,0,0.63);
+    }
+    .profile-card-5 h5{
+        color:#4E5E30;
+        font-weight:600;
+    }
+    .profile-card-5 p{
+        font-size:14px;
+        font-weight:300;
+    }
+    .profile-card-5 .btn-primary{
+        background-color:#4E5E30;
+        border-color:#4E5E30;
+    }
+
+</style>
+</head>
+
+
+<body>
+
+<section>
+    <div class="container">
+        <div class="row">
+
+            <h1 class="text-center"><span>Weather App</span><form action="/" method="POST" class="pure-form">
+                <input type="text" id="location"name="loc" type="text" class="form-control input-lg" placeholder="Enter location" />
+                <span class="input-group-btn">
+                        <button class="btn btn-info btn-lg" type="sumbit">
+                            Search
+                        </button>
+                    </span>
+            </form></h1>
+{{#if msg}}
+   <h3 align="center"><span>ERROR 404: {{msg}}</span></h3>
+{{/if}}
+{{#if pass}}
+            {{#if dark}}
+            <div class="col-md-6">
+                <div class="card profile-card-1">
+                    <img src="https://images.pexels.com/photos/946351/pexels-photo-946351.jpeg?w=500&h=650&auto=compress&cs=tinysrgb" alt="profile-sample1" class="background"/>
+                    <img src={{dark.icon}} alt="profile-image" class="profile"/>
+                    <div class="card-content">
+                        <h2>{{dark.temperature}}&deg;F <small>{{dark.summary}} </small></h3>
+                            <div class="icon-block">
+                                Humidity:{{dark.humidity}} Precipitation: {{dark.precip}} mm
+                            </div>
+                    </div>
+                </div>
+                <p class="mt-3 w-100 float-left text-center"><strong>By Darksky Api</strong></p>
+            </div>
+
+{{/if}}
+{{#if open}}
+            <div class="col-md-6">
+                <div class="card profile-card-3">
+                    <div class="background-block">
+                        <img src="https://images.pexels.com/photos/459225/pexels-photo-459225.jpeg?auto=compress&cs=tinysrgb&h=650&w=940" alt="profile-sample1" class="background"/>
+                    </div>
+                    <div class="profile-thumb-block">
+                        <img src={{open.icon}} alt="profile-image" class="profile"/>
+                    </div>
+                    <div class="card-content">
+                        <h2>{{dark.temperature}}&deg;C <small>{{dark.summary}} </small></h3>
+                            <div class="icon-block">Humidity{{open.humidity}} Precipitation:{{open.precipitation}}</div>
+                    </div>
+                </div>
+                <p class="mt-3 w-100 float-left text-center"><strong>By Openweather APi
+                </strong></p>
+            </div>
+
+
+{{/if}}
+
+        </div>
+    </div>
+</section>
+<div style="display: none;">
+{{#if dark}}
+    <img src={{dark.icon}} alt="weather icon">
+    <span>{{dark.temperature}}&deg;C {{dark.summary}} </span>
+   <span>Humidity:{{dark.humidity}} Precep:{{dark.precip}}</span>
+{{/if}}
+{{#if open}}
+    <img src={{open.icon}} alt="weather icon">
+    <span>{{open.temperature}}&deg;C {{open.summary}}</span>
+ <span>Humidity{{open.humidity}} precep:{{open.precipitation}}</span>
+
+{{/if}}
+</div>
+<br><div style="display: none;">
+HOURLY
+{{#each dark.hourly.data}}
+   <div name="hourtime">{{time}}</div>
+   <div name="time">{{time}}</div>
+   <span ><div name="hourtemp">{{temperature}}</div>
+  Humid:  {{humidity}}</span>
+    <br>
+{{/each}}
+</div>
+<h2 align="center">
+DAILY
+</h2>
+
+<div class="container">
+{{#each dark.daily.data}}
+    <div data-aos="fade-right">
+    <div class="row">
+        <div class="[ col-xs-12 col-sm-offset-2 col-sm-8 ]">
+            <ul class="event-list">
+                <li>
+                    <time datetime={{time}}>
+                                  <div class="date" name="time">{{time}}</div>
+
+                    </time>
+                    <img alt="Independence Day" src="/images/{{icon}}.svg" />
+                    <div class="info">
+                        <h2 class="title">Temp :{{temperatureHigh}}-{{temperatureLow}} &deg;F</h2>
+                        <p class="desc">Precip: {{precipProbability}} Humidity:{{humidity}}</p>
+                    </div>
+
+                </li>
+
+
+            </ul>
+        </div>
+    </div>
+    </div>{{/each}}
+</div>
+<div style="display: none;">
+{{#each dark.daily.data}}
+    <div name="time">{{time}}</div>
+    <img src="/images/{{icon}}.svg" alt="weather icon">
+    <div name="dailytime">{{time}}</div>
+    high:  <div name="temphigh">{{temperatureHigh}}</div>
+    Low: <div name="templow">{{temperatureLow}}</div>
+    Humidity: <div name="dailyhumidity">{{humidity}}</div>
+    precip:  <div name="dailyprecip">{{precipProbability}}</div>
+
+{{/each}}
+</div>
+<br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h2 align="center">
+                Graph 1
+            </h2>
+<canvas id="myChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-4">
+            <h2 align="center">
+                Graph 2
+            </h2>
+        <canvas id="DailyChart" width="400" height="400"></canvas>
+        </div>
+        <div class="col-md-4">
+            <h2 align="center">
+                Graph 3
+            </h2>
+        <canvas id="PChart" width="400" height="400"></canvas>
+        </div>
+    </div>
+</div>
+{{/if}}
+</body>
+
+<script>
+    $(function() {
+                var dailytime=document.getElementsByName('dailytime');
+                var temphigh=document.getElementsByName('temphigh');
+                var templow=document.getElementsByName('templow');
+                var daillyhumid=document.getElementsByName('dailyhumidity');
+                var dailyprecip=document.getElementsByName('dailyprecip');
+                var dailytimearray=[];
+                var temphigharray=[];
+                var templowarray=[];
+                var dailyhumidarray=[];
+                var dailypreciparray=[];
+
+
+                for (index = 0; index < dailytime.length; index++) {
+                    temphigharray.push(parseInt(temphigh[index].innerHTML));
+                    templowarray.push(parseInt(templow[index].innerHTML));
+                    dailyhumidarray.push((parseFloat(daillyhumid[index].innerHTML))*100);
+                    dailypreciparray.push((parseFloat(dailyprecip[index].innerHTML))*100);
+                    dailytimearray.push(timeConverter(dailytime[index].innerHTML));
+
+                }
+                console.log("helo"+dailyhumidarray)
+                var ctxxx = $('#PChart');
+                var color = Chart.helpers.color;
+                let charttt = new Chart(ctxxx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Precipitation ',
+                            fill: false,
+                            backgroundColor: 'rgb(75,0,130)',
+                            borderColor: 'rgb(0,191,255)',
+                            data: dailypreciparray
+                        },{
+                            label: 'Humidity ',
+                            fill: false,
+                            backgroundColor: 'rgb(255, 99, 132)',
+                            borderColor: 'rgb(255, 0,0 )',
+                            data: dailyhumidarray
+                        }],
+                        labels: dailytimearray
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    suggestedMin: 0,
+                                    suggestedMax: 100
+                                }
+                            }]
+                        }
+                    }
+                });
+                var ctxx = $('#DailyChart');
+                let chartt = new Chart(ctxx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Lowtemp F ',
+                            fill: false,
+                            borderColor: 'rgb(135,206,250)',
+                            backgroundColor: 'rgb(240,248,255)',
+
+                            data: templowarray
+                        },{
+                            label: 'Hightemp F ',
+                            fill: false,
+                            borderColor: 'rgb(0,0,128)',
+                            backgroundColor: 'rgb(138,43,226)',
+
+                            data: temphigharray
+                        }],
+                        labels: dailytimearray
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    suggestedMin: 50,
+                                    suggestedMax: 100
+                                }
+                            }]
+                        }
+                    }
+                });
+
+
+                var temparray=document.getElementsByName('hourtemp');
+                var timearray=document.getElementsByName('hourtime');
+
+                var array=[];
+                var arr=[];
+
+                for (index = 0; index < temparray.length; index++) {
+                    array.push(parseInt(temparray[index].innerHTML));
+                   arr.push(timeConverter(timearray[index].innerHTML));
+                }
+                var ctx = $('#myChart');
+                let chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        datasets: [{
+                            label: 'Temperature',
+                            borderColor: 'rgb(0,0,128)',
+                            backgroundColor: 'rgb(0,191,255)',
+
+                            fill: false,
+                            data: array
+                        }],
+                        labels: arr
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    suggestedMin: 50,
+                                    suggestedMax: 100
+                                }
+                            }]
+                        }
+                    }
+                });
+                // add input listeners
+        google.maps.event.addDomListener(window, 'load', function () {
+            var from_places = new google.maps.places.Autocomplete(document.getElementById('location'));
+
+            google.maps.event.addListener(from_places, 'place_changed', function () {
+                var from_place = from_places.getPlace();
+                var from_address = from_place.formatted_address;
+                $('#origin').val(from_address);
+            });
+
+
+
+        });}
+
+        )
+</script>
+<script>
+    function timeConverter(UNIX_timestamp){
+        var a = new Date(UNIX_timestamp * 1000);
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min + ':' + sec ;
+        return time;
+    }
+    // console.log(timeConverter(1553187600))
+    // console.log(document.getElementsByName('time'));
+
+    var array=document.getElementsByName('time');
+    for (index = 0; index < array.length; index++) {
+        array[index].innerHTML=timeConverter(array[index].innerHTML);
+    }
+
+</script>
+</html>

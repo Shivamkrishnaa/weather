@@ -1,0 +1,19 @@
+{
+  "name": "weatherforecast",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chart": "^0.1.2",
+    "dark-sky-api": "^0.6.32",
+    "express": "^4.16.4",
+    "handlebars": "^4.1.1",
+    "hbs": "^4.0.3",
+    "request": "^2.88.0"
+  }
+}
