@@ -6,7 +6,7 @@ About:
 2.Weather API utalized openweather and darksky other api .
 3. node.js ,express as web HBS as view engine,jQuery as client side technology
 
-How to get started in windows
+How to get started on windows
 1. cd filepath(weatherapp) root directory of your application.
 2. In terminal for intalling node modules
 	npm install	
